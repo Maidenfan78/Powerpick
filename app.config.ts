@@ -12,6 +12,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     bundleIdentifier:
       process.env.IOS_BUNDLE_IDENTIFIER || "com.maidenfan.powerpick",
+          infoPlist: {
+      /**
+       * false = “My app does NOT use non-exempt encryption”
+       * true  = “My app DOES use it” (rare for JS/TS apps)
+       */
+      ITSAppUsesNonExemptEncryption: false,
+   },     
   },
 
   // your existing fields

@@ -3,7 +3,6 @@ name: Mobile Build
 on:
   push:
     branches: [ main ]
-    
   workflow_dispatch:
 
 jobs:
@@ -16,7 +15,6 @@ jobs:
         with:
           node-version: 20
 
-      # ⬇️  cache step goes right here
       - name: Cache Yarn
         uses: actions/cache@v4
         with:
@@ -27,7 +25,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
-      # dependency installation runs after the cache is restored
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
@@ -36,6 +33,37 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
+      # ── Android credentials ────────────────────────────────────────
+      - name: Decode Android keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android.keystore
+
+      - name: Setup Android credentials for CI
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          npx eas credentials:manager -p android --non-interactive \
+            --keystore-path android.keystore \
+            --keystore-alias "${{ secrets.KEYSTORE_ALIAS }}" \
+            --keystore-password "${{ secrets.KEYSTORE_PASSWORD }}" \
+            --key-password "${{ secrets.KEY_PASSWORD }}"
+
+      # ── iOS credentials ────────────────────────────────────────────
+      - name: Decode iOS cert & provisioning profile
+        run: |
+          echo "${{ secrets.IOS_CERT_BASE64 }}"   | base64 --decode > distribution-cert.p12
+          echo "${{ secrets.IOS_PROFILE_BASE64 }}"| base64 --decode > profile.mobileprovision
+
+      - name: Setup iOS credentials for CI
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          npx eas credentials:manager -p ios --non-interactive \
+            --distribution-certificate-path distribution-cert.p12 \
+            --certificate-password "${{ secrets.CERT_PASSWORD }}" \
+            --provisioning-profile-path profile.mobileprovision
+
+      # ── Build & submit ─────────────────────────────────────────────
       - name: EAS Build
         run: yarn eas build --platform all --non-interactive
 

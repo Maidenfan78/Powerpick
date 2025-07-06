@@ -30,6 +30,7 @@
     "expo-linking": "~7.1.5",
     "expo-router": "^5.1.1",
     "expo-status-bar": "~2.2.3",
+    "gh": "^2.8.9",
     "pillow": "^0.0.9",
     "react": "^19.1.0",
     "react-dom": "19.1.0",
