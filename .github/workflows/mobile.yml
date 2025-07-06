@@ -48,27 +48,11 @@ jobs:
             --keystore-password "${{ secrets.KEYSTORE_PASSWORD }}" \
             --key-password "${{ secrets.KEY_PASSWORD }}"
 
-      # ── iOS credentials ────────────────────────────────────────────
-      - name: Decode iOS cert & provisioning profile
-        run: |
-          echo "${{ secrets.IOS_CERT_BASE64 }}"   | base64 --decode > distribution-cert.p12
-          echo "${{ secrets.IOS_PROFILE_BASE64 }}"| base64 --decode > profile.mobileprovision
-
-      - name: Setup iOS credentials for CI
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        run: |
-          npx eas credentials:manager -p ios --non-interactive \
-            --distribution-certificate-path distribution-cert.p12 \
-            --certificate-password "${{ secrets.CERT_PASSWORD }}" \
-            --provisioning-profile-path profile.mobileprovision
-
       # ── Build & submit ─────────────────────────────────────────────
       - name: EAS Build
-        run: yarn eas build --platform all --non-interactive
+        run: yarn eas build --platform android --non-interactive
 
-      - name: Submit to stores
-        run: yarn eas submit -p all --latest
+      - name: Submit to Play Store
+        run: yarn eas submit -p android --latest
         env:
-          EXPO_APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APP_SPECIFIC_PW }}
-          EXPO_GOOGLE_SERVICE_ACCOUNT:      ${{ secrets.PLAY_JSON }}
+          EXPO_GOOGLE_SERVICE_ACCOUNT: ${{ secrets.PLAY_JSON }}

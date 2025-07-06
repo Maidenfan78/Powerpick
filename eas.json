@@ -2,8 +2,7 @@
   "cli": { "version": "^16.13.4" },
   "build": {
     "production": {
-      "android": {},
-      "ios": {}
+      "android": {}
     }
   }
 }

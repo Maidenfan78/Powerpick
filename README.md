@@ -2,7 +2,7 @@
 
 **Predict smarter. Play responsibly.**
 
-> A cross‑platform (iOS · Android · Web) Expo/React Native app that delivers draw history, hot/cold analytics, and statistically‑weighted number suggestions for the world’s biggest lotteries—starting in **Australia** and expanding to the **USA** and **Europe**.
+> A cross‑platform (Android · Web) Expo/React Native app that delivers draw history, hot/cold analytics, and statistically‑weighted number suggestions for the world’s biggest lotteries—starting in **Australia** and expanding to the **USA** and **Europe**. _iOS support is planned for a future update._
 > _Powerpick does **not** sell tickets or guarantee winnings – it simply visualises probability so players can make informed, responsible choices._
 
 ![CI](https://github.com/<org>/powerpick/actions/workflows/ci.yml/badge.svg)
@@ -76,15 +76,15 @@ For deeper detail see [`Docs/Phase_0.md`](Docs/Phase_0.md) and [`Docs/WORKFLOW.m
 
 ## 🏗️ Tech Stack
 
-| Layer          | Choice                               | Why                                     |
-| -------------- | ------------------------------------ | --------------------------------------- |
-| **Frontend**   | Expo SDK (React Native + TypeScript) | Single code‑base across iOS/Android/Web |
-| **Navigation** | Expo Router                          | File‑based routing & deep‑linking       |
-| **State**      | React Context + Zustand              | Lightweight & persistent                |
-| **Backend**    | Supabase (PostgreSQL, RLS)           | Real‑time SQL without servers           |
-| **Auth**       | Supabase Auth (email/OAuth)          | Secure & fast setup                     |
-| **Hosting**    | Vercel (Web) · EAS Builds (mobile)   | CI/CD & OTA updates                     |
-| **Scripting**  | Python (pandas etc.)                 | Robust data ingestion                   |
+| Layer          | Choice                               | Why                                 |
+| -------------- | ------------------------------------ | ----------------------------------- |
+| **Frontend**   | Expo SDK (React Native + TypeScript) | Single code‑base across Android/Web |
+| **Navigation** | Expo Router                          | File‑based routing & deep‑linking   |
+| **State**      | React Context + Zustand              | Lightweight & persistent            |
+| **Backend**    | Supabase (PostgreSQL, RLS)           | Real‑time SQL without servers       |
+| **Auth**       | Supabase Auth (email/OAuth)          | Secure & fast setup                 |
+| **Hosting**    | Vercel (Web) · EAS Builds (mobile)   | CI/CD & OTA updates                 |
+| **Scripting**  | Python (pandas etc.)                 | Robust data ingestion               |
 
 ---
 
@@ -158,12 +158,12 @@ See [Docs/WORKFLOW.md](Docs/WORKFLOW.md) for the full guide. Key points:
 
 ## 🚀 Deployment & Scheduling
 
-Powerpick runs across several platforms:
+Powerpick runs across several surfaces. Android binaries are built via EAS (iOS coming soon):
 
 | Concern                              | Best surface                                        | Why                                                                |
 | ------------------------------------ | --------------------------------------------------- | ------------------------------------------------------------------ |
 | Web build, CDN, edge/serverless APIs | **Vercel**                                          | Auto‑pulls from GitHub, zero‑config CDN, built‑in Cron and secrets |
-| iOS/Android binaries & OTA updates   | **Expo EAS Build + EAS Update**                     | Cloud Mac/Linux workers, store submit, one‑click OTA patches       |
+| Android binaries & OTA updates       | **Expo EAS Build + EAS Update**                     | Cloud Linux workers, Play Store submit, one-click OTA patches      |
 | Database-local jobs                  | **Supabase Edge Function** scheduled via `pg_cron`  | 0 ms latency to Postgres; secrets stored in Vault                  |
 | Long/heavy workflows                 | **GitHub Actions**                                  | Up to 72 h on hosted runners, 5‑min cron granularity               |
 | Optional extra cron capacity         | Cloudflare Workers, Railway, Render, Upstash QStash | Use if you need per‑minute triggers or already pay those vendors   |
