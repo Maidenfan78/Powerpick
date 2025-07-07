@@ -3,19 +3,19 @@ import { useEffect, useState, useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
-import RegionPicker from "./src/components/RegionPicker";
-import ComingSoon from "./src/components/ComingSoon";
-import GameGrid from "./src/components/GameGrid";
-import { SCREEN_BG } from "./src/lib/constants";
-import { useTheme } from "./src/lib/theme";
-import { Game, fetchGames } from "./src/lib/gamesApi";
+import RegionPicker from "../src/components/RegionPicker";
+import ComingSoon from "../src/components/ComingSoon";
+import GameGrid from "../src/components/GameGrid";
+import { SCREEN_BG } from "../src/lib/constants";
+import { useTheme } from "../src/lib/theme";
+import { Game, fetchGames } from "../src/lib/gamesApi";
 import { useRouter } from "expo-router";
-import { useGamesStore } from "./src/stores/useGamesStore";
-import { useRegionStore } from "./src/stores/useRegionStore";
+import { useGamesStore } from "../src/stores/useGamesStore";
+import { useRegionStore } from "../src/stores/useRegionStore";
 import {
   REGION_PLACEHOLDER_IMAGES,
   REGION_LABELS,
-} from "./src/lib/regionConfig";
+} from "../src/lib/regionConfig";
 
 export default function IndexScreen() {
   const { tokens } = useTheme();
