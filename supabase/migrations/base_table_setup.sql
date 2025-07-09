@@ -185,6 +185,23 @@ GRANT SELECT ON public.hot_cold_numbers TO anon,authenticated;
 GRANT INSERT,UPDATE,DELETE ON public.hot_cold_numbers TO service_role;
 
 -- -------------------------------------------------------------------
+-- Bell curve predictions
+-- -------------------------------------------------------------------
+CREATE TABLE public.bell_curve_predictions (
+  id               SERIAL PRIMARY KEY,
+  game_id          UUID NOT NULL REFERENCES public.games(id) ON DELETE CASCADE,
+  predicted_numbers INT[] NOT NULL,
+  created_at       TIMESTAMPTZ DEFAULT now()
+);
+ALTER TABLE public.bell_curve_predictions ENABLE ROW LEVEL SECURITY;
+CREATE POLICY bell_curve_read ON public.bell_curve_predictions
+  FOR SELECT TO anon,authenticated USING (true);
+CREATE POLICY bell_curve_rw_service ON public.bell_curve_predictions
+  FOR ALL TO service_role USING (true) WITH CHECK (true);
+GRANT SELECT ON public.bell_curve_predictions TO anon,authenticated;
+GRANT INSERT,UPDATE,DELETE ON public.bell_curve_predictions TO service_role;
+
+-- -------------------------------------------------------------------
 -- Helper: weekday name → int
 -- -------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.dow_from_dayname(p_day TEXT)

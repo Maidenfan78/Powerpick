@@ -26,8 +26,9 @@
 - **Cross‑platform client** – One React Native + Expo code‑base ships to iOS / Android / Web.  
 - **Realtime data** – Nightly draws imported via `pg_net` HTTP calls scheduled with `pg_cron`, all inside Postgres.  
 - **JWT auth & rate‑limits** – Secure every write route; tokens issued by Supabase Auth and validated in FastAPI middleware.  
-- **Hot & cold stats** – Materialised views refresh after each import for instant “trending numbers” insights.  
-- **Fully tested** – PyTest + `TestClient` cover the API and keep regressions out of prod.  
+- **Hot & cold stats** – Materialised views refresh after each import for instant “trending numbers” insights.
+- **Bell‑curve predictions** – Results are stored in Supabase for later analysis.
+- **Fully tested** – PyTest + `TestClient` cover the API and keep regressions out of prod.
 
 ---
 
@@ -43,7 +44,7 @@ Expo App (RN)  ─┬─>  /api/predict   ┐
        Supabase Auth ─── JWT ────> │
                                    │
                 Postgres (Supabase)│
-                ├─ tables: games, draws, results
+                ├─ tables: games, draws, results, bell_curve_predictions
                 ├─ ext: pg_cron, pg_net
                 └─ materialised views
 ```
@@ -81,7 +82,7 @@ supabase db push       # runs /db/migrations/*.sql
 
 The migrations create:
 
-* Core tables (`games`, `draws`, `draw_results`, `predictions`)  
+* Core tables (`games`, `draws`, `draw_results`, `bell_curve_predictions`)
 * Extensions: `pgcrypto`, `pg_cron`, `pg_net`  
 * RLS policies giving **read‑only** access to the public API
 
@@ -121,7 +122,7 @@ Nightly draws import via a `pg_cron` job (`import_draws.sql`) that calls `SELECT
 ## API Reference
 | Route | Method | Auth | Description |
 |-------|--------|------|-------------|
-| `/api/predict` | `POST` | JWT | Returns a single pick using the bell‑curve algorithm |
+| `/api/predict` | `POST` | JWT | Returns a single pick using the bell‑curve algorithm and stores it |
 | `/api/stats` | `GET` | Public | Hot, cold, overdue numbers |
 | `/api/history` | `GET` | JWT | User’s past predictions |
 
