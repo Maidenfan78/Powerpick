@@ -49,3 +49,79 @@ def test_predict_basic():
     data = response.json()
     assert "predicted_numbers" in data
     assert isinstance(data["predicted_numbers"], list)
+
+
+def test_predict_invalid_input():
+    response = client.post("/predict", json={"game_id": "g1", "draws": "oops"})
+    assert response.status_code == 422
+
+
+class StatsTable:
+    def __init__(self, name):
+        self.name = name
+        self.filter_val = None
+
+    def select(self, *_args, **_kwargs):
+        return self
+
+    def eq(self, _column, value):
+        self.filter_val = value
+        return self
+
+    def maybe_single(self):
+        return self
+
+    def order(self, *_args, **_kwargs):
+        return self
+
+    def range(self, *_args, **_kwargs):
+        return self
+
+    def execute(self):
+        if self.name == "games":
+            if self.filter_val == "g1":
+                return types.SimpleNamespace(data={"main_max": 3, "supp_max": 6, "powerball_max": 0})
+            return types.SimpleNamespace(data=None)
+        if self.name == "hot_cold_numbers":
+            if self.filter_val == "g1":
+                return types.SimpleNamespace(data={"main_hot": [1], "main_cold": [3], "supp_hot": [6], "supp_cold": [2]})
+            return types.SimpleNamespace(data={})
+        if self.name == "draws":
+            if self.filter_val == "g1":
+                return types.SimpleNamespace(
+                    data=[
+                        {"draw_number": 3, "draw_results": [
+                            {"number": 1, "ball_types": {"name": "main"}},
+                            {"number": 5, "ball_types": {"name": "supplementary"}},
+                        ]},
+                        {"draw_number": 2, "draw_results": [
+                            {"number": 2, "ball_types": {"name": "main"}},
+                            {"number": 6, "ball_types": {"name": "supplementary"}},
+                        ]},
+                        {"draw_number": 1, "draw_results": [
+                            {"number": 3, "ball_types": {"name": "main"}}
+                        ]},
+                    ]
+                )
+            return types.SimpleNamespace(data=[])
+        return types.SimpleNamespace(data=None)
+
+
+class StatsClient:
+    def table(self, name):
+        return StatsTable(name)
+
+
+def test_stats_basic():
+    api.main.supabase = StatsClient()
+    response = client.get("/stats", params={"game_id": "g1"})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["main_overdue"] == [3]
+    assert data["supp_overdue"] == [1]
+
+
+def test_stats_not_found():
+    api.main.supabase = StatsClient()
+    response = client.get("/stats", params={"game_id": "bad"})
+    assert response.status_code == 404
