@@ -60,12 +60,12 @@ _Vercel handles scaling to zero; Supabase provides Postgres‑as‑a‑service w
 
 ### Prerequisites
 
-| Tool             | Version      | Notes            |
-| ---------------- | ------------ | ---------------- |
-| **Node.js**      | ≥ 18 LTS     | Expo CLI         |
-| **Python**       | ≥ 3.11       | FastAPI, uvicorn |
-| **Docker**       | _(optional)_ | Local Postgres   |
-| **Supabase CLI** | latest       | Local migrations |
+| Tool             | Version       | Notes            |
+| ---------------- | ------------- | ---------------- |
+| **Node.js**      | ≥ 22.14.0 LTS | Expo CLI         |
+| **Python**       | ≥ 3.13        | FastAPI, uvicorn |
+| **Docker**       | _(optional)_  | Local Postgres   |
+| **Supabase CLI** | ≥ 2.30.4      | Local migrations |
 
 ### Clone & bootstrap
 
@@ -83,8 +83,8 @@ Populate the `.env.local` file with your Supabase URL plus separate read and wri
 Required variables:
 
 - `SUPABASE_URL`
-- `SUPABASE_READ_KEY` *(fallback `SUPABASE_ANON_KEY`)*
-- `SUPABASE_WRITE_KEY` *(fallback `SUPABASE_SERVICE_ROLE_KEY`)*
+- `SUPABASE_READ_KEY` _(fallback `SUPABASE_ANON_KEY`)_
+- `SUPABASE_WRITE_KEY` _(fallback `SUPABASE_SERVICE_ROLE_KEY`)_
 
 ### Database setup
 
