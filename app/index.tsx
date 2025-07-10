@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-unused-styles */
 import { useEffect, useState, useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -41,7 +40,7 @@ export default function IndexScreen() {
     };
 
     loadGames();
-  }, []);
+  }, [setGamesStore]);
 
   const handleSelectGame = (game: Game) => {
     router.push(`/game/${game.id}/options`);

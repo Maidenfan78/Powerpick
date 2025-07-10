@@ -1,5 +1,4 @@
 /* ---------- RegionPicker.tsx ---------- */
-/* eslint-disable react-native/no-unused-styles */
 import React, { useState, useMemo } from "react";
 import { View, Text, Pressable, Modal, StyleSheet } from "react-native";
 import { useRouter, usePathname } from "expo-router";

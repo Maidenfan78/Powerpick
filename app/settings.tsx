@@ -1,5 +1,4 @@
 // app/settings.tsx
-/* eslint-disable react-native/no-unused-styles */
 import {
   SafeAreaView,
   View,

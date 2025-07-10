@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-unused-styles */
 import { View, Image, StyleSheet } from "react-native";
 import { useMemo } from "react";
 import { useTheme } from "../lib/theme";

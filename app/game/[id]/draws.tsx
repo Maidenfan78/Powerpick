@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-unused-styles */
 import React, { useEffect, useState, useMemo } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, FlatList, StyleSheet } from "react-native";
@@ -24,8 +23,6 @@ export default function DrawsScreen() {
     load();
   }, [game]);
 
-  if (!game) return null;
-
   const styles = useMemo(
     () =>
       StyleSheet.create({
@@ -43,8 +40,10 @@ export default function DrawsScreen() {
           textAlign: "center",
         },
       }),
-    [tokens, game],
+    [tokens],
   );
+
+  if (!game) return null;
 
   return (
     <SafeAreaView style={styles.container}>

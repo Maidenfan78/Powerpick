@@ -1,5 +1,4 @@
 // components/GameCard.tsx
-/* eslint-disable react-native/no-unused-styles, react-native/sort-styles */
 import React, { useState, useMemo, useEffect } from "react";
 import {
   Text,
