@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-unused-styles */
 import React, { useMemo } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Pressable, Text, StyleSheet } from "react-native";

@@ -1,4 +1,3 @@
-/* eslint-disable react-native/sort-styles, react-native/no-unused-styles */
 import React, { useMemo } from "react";
 import { View, Pressable, Text, StyleSheet } from "react-native";
 import { useRouter, usePathname } from "expo-router";
