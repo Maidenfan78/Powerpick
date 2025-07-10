@@ -1,5 +1,6 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
+from typing import Dict, List
 import os
 import numpy as np
 from scipy.stats import norm
@@ -13,6 +14,31 @@ if SUPABASE_URL and SUPABASE_KEY:
     supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 app = FastAPI()
+
+
+class ConnectionManager:
+    def __init__(self) -> None:
+        self.active_connections: Dict[str, List[WebSocket]] = {}
+
+    async def connect(self, game_id: str, websocket: WebSocket) -> None:
+        await websocket.accept()
+        self.active_connections.setdefault(game_id, []).append(websocket)
+
+    def disconnect(self, game_id: str, websocket: WebSocket) -> None:
+        try:
+            self.active_connections.get(game_id, []).remove(websocket)
+        except ValueError:
+            pass
+
+    async def broadcast(self, game_id: str, message: dict) -> None:
+        for connection in list(self.active_connections.get(game_id, [])):
+            try:
+                await connection.send_json(message)
+            except Exception:
+                self.disconnect(game_id, connection)
+
+
+manager = ConnectionManager()
 
 class DrawData(BaseModel):
     game_id: str
@@ -144,3 +170,24 @@ def stats(game_id: str, percent: int = 20):
         )
 
     return result
+
+
+class DrawNotification(BaseModel):
+    game_id: str
+    draw_number: int
+
+
+@app.websocket("/ws/draws/{game_id}")
+async def draw_updates(websocket: WebSocket, game_id: str):
+    await manager.connect(game_id, websocket)
+    try:
+        while True:
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        manager.disconnect(game_id, websocket)
+
+
+@app.post("/notify_draw")
+async def notify_draw(data: DrawNotification):
+    await manager.broadcast(data.game_id, {"draw_number": data.draw_number})
+    return {"status": "sent"}
