@@ -25,7 +25,7 @@
 
 - **Fast, serverless API** – FastAPI auto‑generates OpenAPI docs at `/docs` and deploys to Vercel Functions in seconds.
 - **Cross‑platform client** – One React Native + Expo code‑base ships to iOS / Android / Web.
-- **Realtime data** – Nightly draws imported via `pg_net` HTTP calls scheduled with `pg_cron`, all inside Postgres.
+- **Realtime data** – Nightly draws imported via `pg_net` HTTP calls scheduled with `pg_cron` (`supabase/migrations/import_draws.sql`).
 - **Live draw tracking** – Clients subscribe via WebSockets for instant updates.
 - **JWT auth & rate‑limits** – Secure every write route; tokens issued by Supabase Auth and validated in FastAPI middleware.
 - **Hot & cold stats** – Materialised views refresh after each import for instant “trending numbers” insights.
@@ -132,7 +132,7 @@ PyTest leverages FastAPI’s `TestClient` so nothing external boots up.
 | **Supabase** (DB)      | `supabase db push` | Supabase migrations guide         |
 | **Vercel** (API + Web) | `vercel --prod`    | Vercel Python runtime & Functions |
 
-Nightly draws import via a `pg_cron` job (`import_draws.sql`) that calls `SELECT net.http_get(...)` against each lottery feed.
+Nightly draws import via `pg_cron` (`supabase/migrations/import_draws.sql`) uses `net.http_get` to pull each lottery feed.
 
 ---
 
