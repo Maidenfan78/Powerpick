@@ -7,15 +7,22 @@ import Constants from "expo-constants";
 const extra = Constants.expoConfig?.extra ?? {};
 const EXPO_PUBLIC_SUPABASE_URL =
   extra.EXPO_PUBLIC_SUPABASE_URL || process.env.EXPO_PUBLIC_SUPABASE_URL;
-const EXPO_PUBLIC_SUPABASE_ANON_KEY =
+const READ_KEY =
+  extra.EXPO_PUBLIC_SUPABASE_READ_KEY ||
+  process.env.EXPO_PUBLIC_SUPABASE_READ_KEY ||
   extra.EXPO_PUBLIC_SUPABASE_ANON_KEY ||
   process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+const WRITE_KEY =
+  extra.EXPO_PUBLIC_SUPABASE_WRITE_KEY ||
+  process.env.EXPO_PUBLIC_SUPABASE_WRITE_KEY;
 
-if (!EXPO_PUBLIC_SUPABASE_URL || !EXPO_PUBLIC_SUPABASE_ANON_KEY) {
+const SUPABASE_KEY = READ_KEY || WRITE_KEY;
+
+if (!EXPO_PUBLIC_SUPABASE_URL || !SUPABASE_KEY) {
   const missing = [];
   if (!EXPO_PUBLIC_SUPABASE_URL) missing.push("EXPO_PUBLIC_SUPABASE_URL");
-  if (!EXPO_PUBLIC_SUPABASE_ANON_KEY)
-    missing.push("EXPO_PUBLIC_SUPABASE_ANON_KEY");
+  if (!READ_KEY && !WRITE_KEY)
+    missing.push("EXPO_PUBLIC_SUPABASE_READ_KEY or EXPO_PUBLIC_SUPABASE_WRITE_KEY");
   throw new Error(
     `Supabase credentials missing. Please set ${missing.join(
       " and ",
@@ -25,5 +32,5 @@ if (!EXPO_PUBLIC_SUPABASE_URL || !EXPO_PUBLIC_SUPABASE_ANON_KEY) {
 
 export const supabase = createClient(
   EXPO_PUBLIC_SUPABASE_URL,
-  EXPO_PUBLIC_SUPABASE_ANON_KEY,
+  SUPABASE_KEY,
 );

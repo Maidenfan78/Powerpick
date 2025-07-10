@@ -9,11 +9,14 @@ let supabase: SupabaseClient;
 function initSupabase(): void {
   const SUPABASE_URL =
     process.env.SUPABASE_URL ?? process.env.EXPO_PUBLIC_SUPABASE_URL;
-  // Use the service role key for backend sync to bypass RLS
-  const SUPABASE_KEY =
-    process.env.SUPABASE_SERVICE_ROLE_KEY ??
+  const READ_KEY =
+    process.env.SUPABASE_READ_KEY ??
     process.env.SUPABASE_ANON_KEY ??
     process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+  const WRITE_KEY =
+    process.env.SUPABASE_WRITE_KEY ??
+    process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const SUPABASE_KEY = WRITE_KEY || READ_KEY;
   if (!SUPABASE_URL || !SUPABASE_KEY) {
     throw new Error("Supabase credentials are missing");
   }

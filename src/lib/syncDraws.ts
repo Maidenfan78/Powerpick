@@ -12,13 +12,16 @@ dotenv.config();
 // 2) Read and validate env vars
 const SUPABASE_URL: string =
   process.env.SUPABASE_URL ?? process.env.EXPO_PUBLIC_SUPABASE_URL ?? "";
-const SUPABASE_ANON_KEY: string =
+const SUPABASE_READ_KEY: string =
+  process.env.SUPABASE_READ_KEY ??
   process.env.SUPABASE_ANON_KEY ??
   process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ??
   "";
-const SUPABASE_SERVICE_ROLE_KEY: string =
-  process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
-const supabaseKey: string = SUPABASE_SERVICE_ROLE_KEY || SUPABASE_ANON_KEY;
+const SUPABASE_WRITE_KEY: string =
+  process.env.SUPABASE_WRITE_KEY ??
+  process.env.SUPABASE_SERVICE_ROLE_KEY ??
+  "";
+const supabaseKey: string = SUPABASE_WRITE_KEY || SUPABASE_READ_KEY;
 
 if (!SUPABASE_URL || !supabaseKey) {
   throw new Error("Supabase credentials are missing");
@@ -26,13 +29,10 @@ if (!SUPABASE_URL || !supabaseKey) {
 
 // 3) Debug credentials (show which key is used)
 log("DEBUG: SUPABASE_URL  =", SUPABASE_URL);
-if (SUPABASE_SERVICE_ROLE_KEY) {
-  log(
-    "DEBUG: Using service role key",
-    SUPABASE_SERVICE_ROLE_KEY.slice(0, 4) + "...",
-  );
+if (SUPABASE_WRITE_KEY) {
+  log("DEBUG: Using write key", SUPABASE_WRITE_KEY.slice(0, 4) + "...");
 } else {
-  log("DEBUG: Using anon key", SUPABASE_ANON_KEY.slice(0, 4) + "...");
+  log("DEBUG: Using read key", SUPABASE_READ_KEY.slice(0, 4) + "...");
 }
 
 // 4) Initialize Supabase client

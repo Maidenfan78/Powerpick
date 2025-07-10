@@ -6,8 +6,11 @@ import numpy as np
 from scipy.stats import norm
 from supabase import create_client, Client
 
+# Prefer explicit read/write keys with service role as fallback
 SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_ANON_KEY")
+SUPABASE_READ_KEY = os.getenv("SUPABASE_READ_KEY") or os.getenv("SUPABASE_ANON_KEY")
+SUPABASE_WRITE_KEY = os.getenv("SUPABASE_WRITE_KEY") or os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+SUPABASE_KEY = SUPABASE_WRITE_KEY or SUPABASE_READ_KEY
 
 supabase: Client | None = None
 if SUPABASE_URL and SUPABASE_KEY:

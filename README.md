@@ -78,7 +78,13 @@ supabase start   # spins up Postgres with pg_cron & pg_net
 cp .env.example .env.local
 ```
 
-Populate the `.env.local` file with your Supabase URL, anon key, and service‑role key—Vercel injects these automatically in prod.
+Populate the `.env.local` file with your Supabase URL plus separate read and write keys. The read key usually matches Supabase's anon key, while the write key should be the service role key. Vercel injects these automatically in prod.
+
+Required variables:
+
+- `SUPABASE_URL`
+- `SUPABASE_READ_KEY` *(fallback `SUPABASE_ANON_KEY`)*
+- `SUPABASE_WRITE_KEY` *(fallback `SUPABASE_SERVICE_ROLE_KEY`)*
 
 ### Database setup
 
