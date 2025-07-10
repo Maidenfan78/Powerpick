@@ -15,13 +15,15 @@ from datetime import datetime
 import requests
 
 # ──────────── Configuration ────────────
-# Supabase connection details. Use service role if available.
+# Supabase connection details. Prefer explicit keys with service role fallback.
 SUPABASE_URL = os.getenv("SUPABASE_URL") or os.getenv("EXPO_PUBLIC_SUPABASE_URL")
-SUPABASE_KEY = (
-    os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+READ_KEY = (
+    os.getenv("SUPABASE_READ_KEY")
     or os.getenv("SUPABASE_ANON_KEY")
     or os.getenv("EXPO_PUBLIC_SUPABASE_ANON_KEY")
 )
+WRITE_KEY = os.getenv("SUPABASE_WRITE_KEY") or os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+SUPABASE_KEY = WRITE_KEY or READ_KEY
 
 DECAY_HALF_LIFE = int(os.getenv("DECAY_HALF_LIFE", "120"))  # in draws
 GAME_UUID = os.getenv("GAME_UUID")
