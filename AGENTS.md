@@ -105,6 +105,7 @@ Allowed:
 
 Disallowed without human approval:
 
+- package-lock.json should be excluded from modifying.
 - Native modules requiring custom Xcode / Gradle work.
 - Anything that duplicates existing functionality (e.g., another state manager).
 
