@@ -27,3 +27,6 @@ export const supabase = createClient(
   EXPO_PUBLIC_SUPABASE_URL,
   EXPO_PUBLIC_SUPABASE_ANON_KEY,
 );
+
+export const API_BASE_URL =
+  extra.EXPO_PUBLIC_API_BASE_URL || process.env.EXPO_PUBLIC_API_BASE_URL || "";

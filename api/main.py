@@ -1,4 +1,5 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+import asyncio
 from pydantic import BaseModel
 import os
 import numpy as np
@@ -144,3 +145,47 @@ def stats(game_id: str, percent: int = 20):
         )
 
     return result
+
+
+@app.websocket("/ws/draws/{game_id}")
+async def draws_ws(websocket: WebSocket, game_id: str):
+    await websocket.accept()
+    if not supabase:
+        await websocket.close()
+        return
+
+    # Send the latest draw on connect
+    latest_resp = (
+        supabase.table("draws")
+        .select("draw_number, draw_date")
+        .eq("game_id", game_id)
+        .order("draw_number", desc=True)
+        .limit(1)
+        .execute()
+    )
+    latest = latest_resp.data or []
+    if latest:
+        await websocket.send_json(latest[0])
+
+    channel = supabase.channel(f"draws_{game_id}")
+
+    async def handle(payload, ws=websocket):
+        await ws.send_json(payload.get("new", {}))
+
+    channel.on(
+        "postgres_changes",
+        {
+            "event": "INSERT",
+            "schema": "public",
+            "table": "draws",
+            "filter": f"game_id=eq.{game_id}",
+        },
+        handle,
+    )
+    channel.subscribe()
+
+    try:
+        while True:
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        channel.unsubscribe()

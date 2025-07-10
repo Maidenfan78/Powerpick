@@ -125,15 +125,16 @@ Nightly draws import via a `pg_cron` job (`import_draws.sql`) that calls `SELECT
 | `/api/predict` | `POST` | JWT | Returns a single pick using the bell‑curve algorithm and stores it |
 | `/api/stats` | `GET` | Public | Hot, cold, overdue numbers |
 | `/api/history` | `GET` | JWT | User’s past predictions |
+| `/ws/draws/{game_id}` | `WS` | Public | Streams new draw rows |
 
 Detailed OpenAPI schema lives at `/docs` (auto‑generated).
 
 ---
 
 ## Roadmap
-- [ ] Add EuroMillions & US Powerball games  
-- [ ] Web socket live‑draw tracker  
-- [ ] Native push notifications (Expo EAS)  
+- [ ] Add EuroMillions & US Powerball games
+- [x] Web socket live‑draw tracker
+- [ ] Native push notifications (Expo EAS)
 - [ ] A/B pricing tests for Pro tier  
 - [ ] GDPR model‑card & audit logs for EU users  
 
