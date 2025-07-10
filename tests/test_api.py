@@ -51,6 +51,20 @@ def test_predict_basic():
     assert isinstance(data["predicted_numbers"], list)
 
 
+def test_predict_custom_percentiles():
+    response = client.post(
+        "/predict",
+        json={
+            "game_id": "g1",
+            "draws": [1, 2, 3],
+            "lower_pct": 0.7,
+            "upper_pct": 0.8,
+        },
+    )
+    assert response.status_code == 200
+    assert "predicted_numbers" in response.json()
+
+
 def test_predict_invalid_input():
     response = client.post("/predict", json={"game_id": "g1", "draws": "oops"})
     assert response.status_code == 422

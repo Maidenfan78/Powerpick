@@ -46,18 +46,23 @@ manager = ConnectionManager()
 class DrawData(BaseModel):
     game_id: str
     draws: list[int]
+    lower_pct: float = 0.15
+    upper_pct: float = 0.85
 
 @app.post("/predict")
 def predict(data: DrawData):
     draws = data.draws
+    if not 0 <= data.lower_pct < data.upper_pct <= 1:
+        raise HTTPException(status_code=400, detail="Invalid percentile range")
+
     if not draws:
         predicted_numbers: list[int] = []
     else:
         mean = float(np.mean(draws))
         std_dev = float(np.std(draws)) or 1.0
         x = np.arange(1, 91)
-        lower_bound = norm.ppf(0.15, mean, std_dev)
-        upper_bound = norm.ppf(0.85, mean, std_dev)
+        lower_bound = norm.ppf(data.lower_pct, mean, std_dev)
+        upper_bound = norm.ppf(data.upper_pct, mean, std_dev)
         predicted_numbers = [int(num) for num in x if lower_bound <= num <= upper_bound]
 
     if supabase:

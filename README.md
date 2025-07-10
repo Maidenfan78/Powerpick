@@ -29,7 +29,7 @@
 - **Live draw tracking** – Clients subscribe via WebSockets for instant updates.
 - **JWT auth & rate‑limits** – Secure every write route; tokens issued by Supabase Auth and validated in FastAPI middleware.
 - **Hot & cold stats** – Materialised views refresh after each import for instant “trending numbers” insights.
-- **Bell‑curve predictions** – Results are stored in Supabase for later analysis.
+- **Bell‑curve predictions** – Range configurable via percentiles; results are stored in Supabase for later analysis.
 - **Fully tested** – PyTest + `TestClient` cover the API and keep regressions out of prod.
 
 ---
@@ -140,7 +140,7 @@ Nightly draws import via `pg_cron` (`supabase/migrations/import_draws.sql`) uses
 
 | Route                | Method | Auth   | Description                                                        |
 | -------------------- | ------ | ------ | ------------------------------------------------------------------ |
-| `/api/predict`       | `POST` | JWT    | Returns a single pick using the bell‑curve algorithm and stores it |
+| `/api/predict`       | `POST` | JWT    | Returns a single pick using the bell‑curve algorithm and stores it (accepts `lower_pct` and `upper_pct`) |
 | `/api/stats`         | `GET`  | Public | Hot, cold, overdue numbers                                         |
 | `/api/history`       | `GET`  | JWT    | User’s past predictions                                            |
 | `/ws/draws/{gameId}` | `WS`   | Public | Real‑time draw updates                                             |
