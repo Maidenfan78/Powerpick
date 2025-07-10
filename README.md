@@ -24,7 +24,8 @@
 ## Features
 - **Fast, serverless API** – FastAPI auto‑generates OpenAPI docs at `/docs` and deploys to Vercel Functions in seconds.  
 - **Cross‑platform client** – One React Native + Expo code‑base ships to iOS / Android / Web.  
-- **Realtime data** – Nightly draws imported via `pg_net` HTTP calls scheduled with `pg_cron`, all inside Postgres.  
+- **Realtime data** – Nightly draws imported via `pg_net` HTTP calls scheduled with `pg_cron`, all inside Postgres.
+- **Live draw tracking** – Clients subscribe via WebSockets for instant updates.
 - **JWT auth & rate‑limits** – Secure every write route; tokens issued by Supabase Auth and validated in FastAPI middleware.  
 - **Hot & cold stats** – Materialised views refresh after each import for instant “trending numbers” insights.
 - **Bell‑curve predictions** – Results are stored in Supabase for later analysis.
@@ -125,6 +126,8 @@ Nightly draws import via a `pg_cron` job (`import_draws.sql`) that calls `SELECT
 | `/api/predict` | `POST` | JWT | Returns a single pick using the bell‑curve algorithm and stores it |
 | `/api/stats` | `GET` | Public | Hot, cold, overdue numbers |
 | `/api/history` | `GET` | JWT | User’s past predictions |
+| `/ws/draws/{gameId}` | `WS` | Public | Real‑time draw updates |
+| `/notify_draw` | `POST` | JWT | Broadcast new draw to subscribers |
 
 Detailed OpenAPI schema lives at `/docs` (auto‑generated).
 
@@ -132,7 +135,7 @@ Detailed OpenAPI schema lives at `/docs` (auto‑generated).
 
 ## Roadmap
 - [ ] Add EuroMillions & US Powerball games  
-- [ ] Web socket live‑draw tracker  
+- [x] Web socket live‑draw tracker
 - [ ] Native push notifications (Expo EAS)  
 - [ ] A/B pricing tests for Pro tier  
 - [ ] GDPR model‑card & audit logs for EU users  
