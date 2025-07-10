@@ -319,6 +319,14 @@ export default function GameOptionsScreen() {
           <Text style={styles.buttonText}>Hot & Cold Numbers</Text>
         </Pressable>
 
+        <Pressable
+          style={[styles.button, styles.buttonSpacing]}
+          onPress={() => router.push(`/game/${id}/bellcurve`)}
+          accessibilityRole="button"
+        >
+          <Text style={styles.buttonText}>Bell Curve</Text>
+        </Pressable>
+
         {sets.length > 0 && (
           <>
             {sets.map((nums, idx) => {
