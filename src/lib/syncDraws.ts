@@ -3,6 +3,9 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import fetch from "cross-fetch";
 import { log, error } from "./logger.ts";
 
+// 6) CSV parsing helpers
+import { csvParse as parseCsv, CsvRow } from "./csvParser.ts";
+
 // 1) Load environment variables
 dotenv.config();
 
@@ -70,9 +73,6 @@ const GAMES: Game[] = [
     suppTypeId: 8,
   },
 ];
-
-// 6) CSV parsing helpers
-import { csvParse as parseCsv, CsvRow } from "./csvParser.ts";
 
 function extractNumbers(row: CsvRow, prefix: string): number[] {
   return Object.keys(row)

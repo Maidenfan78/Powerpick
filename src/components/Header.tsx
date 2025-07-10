@@ -2,7 +2,7 @@
 import { View, StyleSheet, Platform, Image } from "react-native";
 import { useMemo } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import logo from "../../assets/logo.png"; 
+import logo from "../../assets/logo.png";
 import { useTheme } from "../lib/theme";
 import RegionPicker from "./RegionPicker";
 

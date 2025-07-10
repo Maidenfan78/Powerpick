@@ -4,14 +4,32 @@
   "main": "index.ts",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web",
+    "prebuild": "expo prebuild",
+    "lint": "expo lint",
+    "lint:fix": "expo lint --fix",
+    "format": "prettier \"**/*.{js,jsx,ts,tsx,json,md}\" --write",
+    "type-check": "tsc --noEmit",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "e2e:build": "detox build --configuration android.emu.release",
+    "e2e": "detox test",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@expo/metro-runtime": "~5.0.4",
     "@react-native-async-storage/async-storage": "2.1.2",
-    "@react-native-community/slider": "^4.5.7",
+    "@react-native-community/slider": "4.5.6",
     "@supabase/supabase-js": "^2.50.3",
     "dotenv": "^17.0.1",
     "expo": "~53.0.17",
@@ -20,19 +38,32 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.5",
-    "react-native-async-storage": "^0.0.1",
-    "react-native-gesture-handler": "^2.27.1",
+    "react-native-gesture-handler": "~2.24.0",
     "react-native-paper": "^5.14.5",
-    "react-native-safe-area-context": "^5.4.0",
+    "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "^4.11.1",
     "react-native-web": "^0.20.0",
     "zustand": "^5.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@config-plugins/detox": "11.0.0",
+    "@testing-library/react-native": "^13.2.0",
     "@types/react": "~19.0.10",
+    "@typescript-eslint/eslint-plugin": "^8.36.0",
+    "@typescript-eslint/parser": "^8.36.0",
+    "detox": "20.40.1",
+    "eslint": "^9.0.0",
+    "eslint-config-expo": "~9.2.0",
+    "eslint-config-prettier": "10.1.5",
+    "eslint-plugin-prettier": "5.5.1",
+    "husky": "^9.1.7",
+    "jest": "^29.7.0",
+    "lint-staged": "^16.1.2",
+    "playwright": "1.53.2",
+    "prettier": "3.6.2",
+    "react-test-renderer": "19.0.0",
     "typescript": "~5.8.3"
   },
-  "private": true,
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  "private": true
 }
