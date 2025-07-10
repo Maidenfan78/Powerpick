@@ -45,7 +45,16 @@ class DrawData(BaseModel):
     draws: list[int]
 
 @app.post("/predict")
-def predict(data: DrawData):
+def predict(
+    data: DrawData,
+    low_pct: float = 0.7,
+    high_pct: float = 0.8,
+):
+    """Return predicted numbers within a percentile range of past draws."""
+
+    if not 0 < low_pct < high_pct < 1:
+        raise HTTPException(status_code=400, detail="Invalid percentile range")
+
     draws = data.draws
     if not draws:
         predicted_numbers: list[int] = []
@@ -53,8 +62,8 @@ def predict(data: DrawData):
         mean = float(np.mean(draws))
         std_dev = float(np.std(draws)) or 1.0
         x = np.arange(1, 91)
-        lower_bound = norm.ppf(0.15, mean, std_dev)
-        upper_bound = norm.ppf(0.85, mean, std_dev)
+        lower_bound = norm.ppf(low_pct, mean, std_dev)
+        upper_bound = norm.ppf(high_pct, mean, std_dev)
         predicted_numbers = [int(num) for num in x if lower_bound <= num <= upper_bound]
 
     if supabase:

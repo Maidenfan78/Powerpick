@@ -134,13 +134,15 @@ Nightly draws import via a `pg_cron` job (`import_draws.sql`) that calls `SELECT
 
 | Route                | Method | Auth   | Description                                                        |
 | -------------------- | ------ | ------ | ------------------------------------------------------------------ |
-| `/api/predict`       | `POST` | JWT    | Returns a single pick using the bell‑curve algorithm and stores it |
+| `/api/predict`       | `POST` | JWT    | Returns a single pick using the bell‑curve algorithm and stores it. Supports `low_pct` and `high_pct` query params |
 | `/api/stats`         | `GET`  | Public | Hot, cold, overdue numbers                                         |
 | `/api/history`       | `GET`  | JWT    | User’s past predictions                                            |
 | `/ws/draws/{gameId}` | `WS`   | Public | Real‑time draw updates                                             |
 | `/notify_draw`       | `POST` | JWT    | Broadcast new draw to subscribers                                  |
 
 Detailed OpenAPI schema lives at `/docs` (auto‑generated).
+
+`/api/predict` uses a bell‑curve window. By default it returns numbers between the 70th and 80th percentile of past draws. Adjust the range via `low_pct` and `high_pct` query parameters.
 
 ---
 

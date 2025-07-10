@@ -49,3 +49,20 @@ def test_predict_basic():
     data = response.json()
     assert "predicted_numbers" in data
     assert isinstance(data["predicted_numbers"], list)
+
+
+def test_predict_custom_percentiles():
+    resp = client.post(
+        "/predict?low_pct=0.15&high_pct=0.85",
+        json={"game_id": "g1", "draws": [1, 2, 3]},
+    )
+    assert resp.status_code == 200
+    assert "predicted_numbers" in resp.json()
+
+
+def test_predict_invalid_range():
+    resp = client.post(
+        "/predict?low_pct=0.9&high_pct=0.8",
+        json={"game_id": "g1", "draws": [1, 2, 3]},
+    )
+    assert resp.status_code == 400
