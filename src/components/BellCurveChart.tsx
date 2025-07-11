@@ -1,76 +1,100 @@
-import React from "react";
-import { View, StyleSheet, Text, LayoutChangeEvent } from "react-native";
+import React, { useMemo } from "react";
+import { View, Text, StyleSheet, LayoutChangeEvent } from "react-native";
 import * as Svg from "react-native-svg";
+import { Bucket } from "../lib/buildSumBuckets";
 
 interface BellCurveChartProps {
-  counts: number[];
+  buckets: Bucket[];
+  height?: number;
+  barColor?: string;
+  curveColor?: string;
 }
 
-function buildPath(
-  values: number[],
-  width: number,
-  height: number,
-): string {
-  const max = Math.max(...values);
-  const step = width / values.length;
-  const points = values.map((v, i) => {
-    return {
-      x: i * step + step / 2,
-      y: height - (v / max) * height,
-    };
-  });
-  if (points.length < 2) return "";
-  let d = `M ${points[0].x} ${points[0].y}`;
-  for (let i = 1; i < points.length; i++) {
-    const p0 = points[i - 1];
-    const p1 = points[i];
-    const midX = (p0.x + p1.x) / 2;
-    d += ` C ${midX} ${p0.y}, ${midX} ${p1.y}, ${p1.x} ${p1.y}`;
-  }
-  return d;
-}
+export default function BellCurveChart({
+  buckets,
+  height = 220,
+  barColor = "#6C5CE7",
+  curveColor = "#FFEB3B",
+}: BellCurveChartProps) {
+  const [layout, setLayout] = React.useState<{ w: number; h: number }>();
+  const maxFreq = Math.max(...buckets.map((b) => b.freq), 1);
 
-export default function BellCurveChart({ counts }: BellCurveChartProps) {
-  const max = Math.max(...counts, 0);
-  const [layout, setLayout] = React.useState<{ width: number; height: number }>();
+  const onLayout = ({ nativeEvent }: LayoutChangeEvent) =>
+    setLayout({ w: nativeEvent.layout.width, h: height });
 
-  if (!max) return null;
-  const onLayout = (e: LayoutChangeEvent) => {
-    const { width, height } = e.nativeEvent.layout;
-    setLayout({ width, height });
-  };
+  const gaussianPath = useMemo(() => {
+    if (!layout || !buckets.length) return "";
+    const { w, h } = layout;
+    const totalFreq = buckets.reduce((s, b) => s + b.freq, 0);
+    const mean =
+      buckets.reduce((s, b) => s + b.mid * b.freq, 0) / totalFreq;
+    const variance =
+      buckets.reduce((s, b) => s + (b.mid - mean) ** 2 * b.freq, 0) /
+      totalFreq;
+    const sigma = Math.sqrt(variance);
 
-  const path =
-    layout && counts.length > 1
-      ? buildPath(counts, layout.width, layout.height)
-      : "";
+    const xs = Array.from({ length: 100 }, (_, i) => {
+      const pos = i / 99;
+      return buckets[0].mid + pos * (buckets[buckets.length - 1].mid - buckets[0].mid);
+    });
+    const norm = (x: number) =>
+      (1 / (sigma * Math.sqrt(2 * Math.PI))) *
+      Math.exp(-((x - mean) ** 2) / (2 * sigma ** 2));
+
+    const ys = xs.map(norm);
+    const yMax = Math.max(...ys);
+
+    const scaleX = (x: number) =>
+      ((x - buckets[0].mid) /
+        (buckets[buckets.length - 1].mid - buckets[0].mid)) *
+      w;
+    const scaleY = (y: number) => h - (y / yMax) * h;
+
+    let d = `M ${scaleX(xs[0])} ${scaleY(ys[0])}`;
+    for (let i = 1; i < xs.length; i++) {
+      d += ` L ${scaleX(xs[i])} ${scaleY(ys[i])}`;
+    }
+    return d;
+  }, [layout, buckets]);
+
+  if (!buckets.length) return null;
 
   return (
-    <View accessibilityLabel="Bell curve chart" style={styles.wrapper}>
-      <View style={styles.chartArea} onLayout={onLayout}>
-        {counts.map((c, idx) => (
-          <View key={`bar-${idx}`} style={styles.barContainer}>
-            <Text style={styles.countLabel}>{c}</Text>
-            <View
-              accessibilityLabel="count bar"
-              style={[styles.bar, { height: `${(c / max) * 100}%` }]}
-            />
-          </View>
-        ))}
-        {layout && path ? (
-          <Svg.Svg
-            style={StyleSheet.absoluteFill}
-            width={layout.width}
-            height={layout.height}
-          >
-            <Svg.Path d={path} stroke="#6c5ce7" fill="none" />
-          </Svg.Svg>
-        ) : null}
-      </View>
+    <View style={[styles.wrapper, { height }]} onLayout={onLayout}>
+      {buckets.map((b, idx) => (
+        <View
+          key={idx}
+          style={[
+            styles.barContainer,
+            { width: (layout ? layout.w : buckets.length * 32) / buckets.length, height },
+          ]}
+        >
+          <View
+            accessibilityLabel="histogram bar"
+            style={{
+              backgroundColor: barColor,
+              width: "75%",
+              height: (b.freq / maxFreq) * (height * 0.9),
+            }}
+          />
+        </View>
+      ))}
+
+      {layout && (
+        <Svg.Svg
+          style={StyleSheet.absoluteFill}
+          width={layout.w}
+          height={height}
+          viewBox={`0 0 ${layout.w} ${height}`}
+        >
+          <Svg.Path d={gaussianPath} stroke={curveColor} strokeWidth={2} fill="none" />
+        </Svg.Svg>
+      )}
+
       <View style={styles.axis}>
-        {counts.map((_, idx) => (
-          <Text key={`axis-${idx}`} style={styles.axisLabel}>
-            {idx + 1}
+        {buckets.map((b) => (
+          <Text key={b.label} style={styles.axisLabel}>
+            {b.label}
           </Text>
         ))}
       </View>
@@ -79,35 +103,13 @@ export default function BellCurveChart({ counts }: BellCurveChartProps) {
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    marginVertical: 16,
-  },
-  chartArea: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    height: 100,
-  },
-  barContainer: {
-    flex: 1,
-    alignItems: "center",
-  },
-  bar: {
-    width: "60%",
-    marginHorizontal: 1,
-    backgroundColor: "#6c5ce7",
-  },
-  countLabel: {
-    fontSize: 10,
-    marginBottom: 2,
-    color: "#333",
-  },
-  axis: {
-    flexDirection: "row",
-  },
+  wrapper: { width: "100%", paddingBottom: 24 },
+  barContainer: { alignItems: "center", justifyContent: "flex-end" },
+  axis: { flexDirection: "row", flexWrap: "wrap" },
   axisLabel: {
-    flex: 1,
+    fontSize: 10,
     textAlign: "center",
-    fontSize: 12,
-    color: "#666",
+    width: 32,
+    color: "#aaa",
   },
 });
