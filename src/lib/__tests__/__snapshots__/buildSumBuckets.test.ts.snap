@@ -1,0 +1,116 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`builds correct bucket frequencies 1`] = `
+[
+  {
+    "freq": 1,
+    "label": "20-29",
+    "mid": 25,
+  },
+  {
+    "freq": 0,
+    "label": "30-39",
+    "mid": 35,
+  },
+  {
+    "freq": 0,
+    "label": "40-49",
+    "mid": 45,
+  },
+  {
+    "freq": 0,
+    "label": "50-59",
+    "mid": 55,
+  },
+  {
+    "freq": 0,
+    "label": "60-69",
+    "mid": 65,
+  },
+  {
+    "freq": 0,
+    "label": "70-79",
+    "mid": 75,
+  },
+  {
+    "freq": 0,
+    "label": "80-89",
+    "mid": 85,
+  },
+  {
+    "freq": 0,
+    "label": "90-99",
+    "mid": 95,
+  },
+  {
+    "freq": 0,
+    "label": "100-109",
+    "mid": 105,
+  },
+  {
+    "freq": 0,
+    "label": "110-119",
+    "mid": 115,
+  },
+  {
+    "freq": 0,
+    "label": "120-129",
+    "mid": 125,
+  },
+  {
+    "freq": 0,
+    "label": "130-139",
+    "mid": 135,
+  },
+  {
+    "freq": 0,
+    "label": "140-149",
+    "mid": 145,
+  },
+  {
+    "freq": 0,
+    "label": "150-159",
+    "mid": 155,
+  },
+  {
+    "freq": 0,
+    "label": "160-169",
+    "mid": 165,
+  },
+  {
+    "freq": 0,
+    "label": "170-179",
+    "mid": 175,
+  },
+  {
+    "freq": 0,
+    "label": "180-189",
+    "mid": 185,
+  },
+  {
+    "freq": 0,
+    "label": "190-199",
+    "mid": 195,
+  },
+  {
+    "freq": 0,
+    "label": "200-209",
+    "mid": 205,
+  },
+  {
+    "freq": 0,
+    "label": "210-219",
+    "mid": 215,
+  },
+  {
+    "freq": 1,
+    "label": "220-229",
+    "mid": 225,
+  },
+  {
+    "freq": 0,
+    "label": "230-239",
+    "mid": 235,
+  },
+]
+`;

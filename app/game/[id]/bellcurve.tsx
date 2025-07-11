@@ -3,7 +3,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, StyleSheet } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useTheme } from "../../../src/lib/theme";
-import { fetchRecentDraws, DrawResult } from "../../../src/lib/gamesApi";
+import { fetchRecentDraws } from "../../../src/lib/gamesApi";
+import { buildSumBuckets, Bucket } from "../../../src/lib/buildSumBuckets";
 import { useGamesStore } from "../../../src/stores/useGamesStore";
 import { SCREEN_BG } from "../../../src/lib/constants";
 import BellCurveChart from "../../../src/components/BellCurveChart";
@@ -11,17 +12,15 @@ import BellCurveChart from "../../../src/components/BellCurveChart";
 export default function BellCurveScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { tokens } = useTheme();
-  const [counts, setCounts] = useState<number[]>([]);
+  const [buckets, setBuckets] = useState<Bucket[]>([]);
   const game = useGamesStore((s) => (id ? s.getGame(id) : undefined));
 
   useEffect(() => {
     const load = async () => {
       if (game) {
         const draws = await fetchRecentDraws(game.id);
-        const nums = draws.flatMap((d) => d.winning_numbers);
-        const arr = Array(game.mainMax ?? 0).fill(0);
-        for (const n of nums) arr[n - 1]++;
-        setCounts(arr);
+        const mainBalls = draws.map((d) => d.winning_numbers);
+        setBuckets(buildSumBuckets(mainBalls, 5));
       }
     };
     load();
@@ -50,9 +49,9 @@ export default function BellCurveScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>{game.name} Bell Curve</Text>
-      {counts.length ? (
-        <BellCurveChart counts={counts} />
+      <Text style={styles.title}>{game.name} Sum Frequency Curve</Text>
+      {buckets.length ? (
+        <BellCurveChart buckets={buckets} />
       ) : (
         <Text style={styles.text}>Loading…</Text>
       )}
