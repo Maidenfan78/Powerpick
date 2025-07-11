@@ -2,8 +2,12 @@ import React from "react";
 import { render } from "@testing-library/react-native";
 import BellCurveChart from "../BellCurveChart";
 
-test("renders bars for each count", () => {
-  const { getByLabelText } = render(<BellCurveChart counts={[1, 2, 3]} />);
-  const container = getByLabelText("Bell curve chart");
-  expect(container.props.children.length).toBe(3);
+test("renders bars and axis labels", () => {
+  const { getAllByLabelText, getByText } = render(
+    <BellCurveChart counts={[10, 20, 30]} />,
+  );
+  expect(getAllByLabelText("count bar").length).toBe(3);
+  getByText("1");
+  getByText("2");
+  getByText("3");
 });
