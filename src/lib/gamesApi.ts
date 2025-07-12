@@ -171,8 +171,7 @@ export async function fetchRecentDraws(
     .from("draws")
     .select("draw_number, draw_date, draw_results(number, ball_types(name))")
     .eq("game_id", gameId)
-    .order("draw_number", { ascending: false })
-    .limit(10);
+    .order("draw_number", { ascending: false });
   if (error) {
     console.error("Error fetching draws:", error);
     throw error;

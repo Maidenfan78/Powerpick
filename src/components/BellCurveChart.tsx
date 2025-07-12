@@ -103,7 +103,12 @@ export default function BellCurveChart({
 }
 
 const styles = StyleSheet.create({
-  wrapper: { width: "100%", paddingBottom: 24 },
+  wrapper: {
+    width: "100%",
+    paddingBottom: 24,
+    flexDirection: "row",
+    alignItems: "flex-end",
+  },
   barContainer: { alignItems: "center", justifyContent: "flex-end" },
   axis: { flexDirection: "row", flexWrap: "wrap" },
   axisLabel: {
